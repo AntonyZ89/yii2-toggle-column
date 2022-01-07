@@ -220,7 +220,7 @@ class ToggleColumn extends Widget
 
         $this->_columnSelectorEnabled = $this->showColumnSelector;
 
-        $path = '@antonyz89/togglecolumns/views';
+        $path = '@antonyz89/togglecolumn/views';
         if (!isset($this->toggleColumnView)) {
             $this->toggleColumnView = "{$path}/_columns";
         }
