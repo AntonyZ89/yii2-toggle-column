@@ -55,7 +55,7 @@ return [
     // ...
 ];
 ```
-After you downloaded and configured Yii2-rbac, the last thing you need to do is updating your database schema by applying the migration:
+After you downloaded, the last thing you need to do is updating your database schema by applying the migration:
 
 ```bash
 $ php yii migrate/up --migrationPath=@antonyz89/togglecolumns/migrations
