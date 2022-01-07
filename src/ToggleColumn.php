@@ -402,12 +402,11 @@ class ToggleColumn extends Widget
 
     public function initSelectedColumns()
     {
-        if (!empty($this->selectedColumns)) {
-            return;
+        $db = ModelsToggleColumn::find()->whereUser(Yii::$app->user->id)->whereTable($this->getTable())->one();
+        $db = $db ? json_decode($db->columns, true) : [];
+
+        if (!empty($db)) {
+            $this->selectedColumns = $db;
         }
-
-        $model = ModelsToggleColumn::find()->whereUser(Yii::$app->user->id)->whereTable($this->getTable())->one();
-
-        $this->selectedColumns = $model ? json_decode($model->columns, true) : null;
     }
 }
