@@ -137,12 +137,12 @@ class ToggleColumn extends Widget
     protected function initColumnSelector()
     {
         $selector = [];
-        Html::addCssClass($this->columnSelectorOptions, ['btn', $this->getDefaultBtnCss(), 'dropdown-toggle']);
+        Html::addCssClass($this->columnSelectorOptions, ['btn', $this->getDefaultBtnCss(), 'dropdown-toggle toggle-column-button']);
         $header = ArrayHelper::getValue($this->columnSelectorOptions, 'header', Yii::t('tc', 'Select Columns'));
         $this->columnSelectorOptions['header'] = (!isset($header) || $header === false) ? '' :
             '<li class="dropdown-header">' . $header . '</li><li class="kv-divider"></li>';
         $id = $this->options['id'] . '-cols';
-        Html::addCssClass($this->columnSelectorMenuOptions, 'dropdown-menu kv-checkbox-list');
+        Html::addCssClass($this->columnSelectorMenuOptions, 'dropdown-menu kv-checkbox-list toggle-column-list');
         $this->columnSelectorMenuOptions = array_replace_recursive(
             [
                 'id' => "$id-list",
@@ -368,8 +368,6 @@ class ToggleColumn extends Widget
             }).change();
 
             function saveColumns(selectedColumns) {
-                console.log(selectedColumns);
-
                 $.post('$url', {
                     columns: selectedColumns,
                     table: '{$this->getTable()}'
@@ -378,6 +376,19 @@ class ToggleColumn extends Widget
         JS;
 
         $this->view->registerJs($js, View::POS_READY);
+
+        $css = <<< CSS
+            .toggle-column-button {
+                padding: 0.4rem 1.1rem;
+                margin-left: 0.5rem;
+            }
+
+            .toggle-column-list {
+                padding: 0.6rem;
+            }
+        CSS;
+
+        $this->view->registerCss($css);
     }
 
     /**
