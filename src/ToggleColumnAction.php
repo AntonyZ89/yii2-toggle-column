@@ -58,11 +58,11 @@ class ToggleColumnAction extends Action
         $this->_model = $this->query->one();
 
         if (!$this->_model) {
-            if(!isset($this->user_id)) {
+            if (!isset($this->user_id)) {
                 throw new InvalidConfigException('The "user_id" property must be set.');
             }
 
-            if(!isset($this->table)) {
+            if (!isset($this->table)) {
                 throw new InvalidConfigException('The "table" property must be set.');
             }
 
@@ -82,8 +82,7 @@ class ToggleColumnAction extends Action
         $transaction = Yii::$app->db->beginTransaction();
 
         try {
-
-            $this->_model->columns = json_encode($this->columns);
+            $this->_model->columns = addslashes(json_encode($this->columns, JSON_UNESCAPED_SLASHES));
 
             if ($this->_model->save()) {
                 $transaction->commit();

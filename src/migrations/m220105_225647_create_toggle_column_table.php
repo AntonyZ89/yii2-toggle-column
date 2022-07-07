@@ -17,7 +17,7 @@ class m220105_225647_create_toggle_column_table extends Migration
             'user_id' => $this->integer()->notNull(),
 
             'table' => $this->string()->notNull(),
-            'columns' => $this->json()->notNull(),
+            'columns' => $this->text()->notNull(),
 
             'created_at' => $this->integer()->notNull(),
             'updated_at' => $this->integer()->notNull(),
