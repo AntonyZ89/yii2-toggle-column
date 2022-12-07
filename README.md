@@ -13,14 +13,14 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-php composer.phar require --prefer-dist antonyz89/yii2-toggle-column dev-master
-php require antonyz89/yii2-toggle-column dev-master
+php composer.phar require --prefer-dist antonyz89/yii2-toggle-column dev-main
+composer require antonyz89/yii2-toggle-column dev-main
 ```
 
 or add
 
 ```
-"antonyz89/yii2-toggle-column": "dev-master"
+"antonyz89/yii2-toggle-column": "dev-main"
 ```
 
 to the require section of your `composer.json` file.
@@ -48,7 +48,7 @@ return [
         'translations' => [
             'tc' => [ // Toggle Column
                 'class' => PhpMessageSource::class,
-                'basePath' => '@antonyz89/togglecolumns/messages',
+                'basePath' => '@antonyz89/togglecolumn/messages',
             ],
         ],
     ],

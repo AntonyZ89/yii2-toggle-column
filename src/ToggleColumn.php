@@ -333,15 +333,15 @@ class ToggleColumn extends Widget
         $tableTarget = $this->table_id ? '#' . $this->table_id : 'table';
 
         $js = <<< JS
+            let debounceSave = null;
             const tcId = '{$this->options['id']}';
             const table = $('{$tableTarget}');
 
             const dropdown = $(`#\${tcId}-cols-list`);
-            const columns = dropdown.find('.custom-control-input');
+            const toggleCb = dropdown.find(`#tc_columns_toggle_\${tcId}`);
+            const columns = dropdown.find('[name="tc_selector[]"]');
 
-            dropdown.off('click').click(function(e) {
-                e.stopPropagation();
-            });
+            dropdown.off('click').click(e => e.stopPropagation());
 
             dropdown.find(`#tc_columns_toggle_\${tcId}`).click(function () {
                 const checked = $(this).prop('checked');
@@ -353,25 +353,38 @@ class ToggleColumn extends Widget
             columns.change(function () {
                 const selectedRow = $(this).closest('li');
                 const selectedRowIndex = selectedRow.index();
-                const dividerIndex = selectedRow.parent().find('li.dropdown-divider').index();
+                const dividerIndex = selectedRow.parent().find('li.dropdown-divider, li.divider').index();
 
                 const index = selectedRowIndex - dividerIndex;
 
-                const header = table.find(`tr > th:nth-child(\${index})`).toggle(this.checked);
+                const header = table.find(`thead > tr > th:nth-child(\${index})`).toggle(this.checked);
                 const row = $(`tr > td:nth-child(\${index})`);
 
                 !row.find('div.empty').length && row.toggle(this.checked);
 
+                const allChecked = columns.toArray().every(el => el.checked);
+
+                toggleCb.prop('checked', Number(allChecked));
+            });
+
+            // trigger change to hide columns
+            columns.change();
+
+            // add change event to save columns on db
+            columns.change(function () {
                 const selectedColumns = columns.filter((index, el) => !el.id.includes('toggle') && el.checked).map((i, el) => el.id)
 
                 saveColumns([...selectedColumns]);
-            }).change();
+            })
 
             function saveColumns(selectedColumns) {
-                $.post('$url', {
-                    columns: selectedColumns,
-                    table: '{$this->getTable()}'
-                });
+                clearTimeout(debounceSave);
+                debounceSave = setTimeout(() => {
+                    $.post('$url', {
+                        columns: selectedColumns,
+                        table: '{$this->getTable()}'
+                    });
+                }, 100);
             }
         JS;
 
@@ -414,9 +427,9 @@ class ToggleColumn extends Widget
     public function initSelectedColumns()
     {
         $db = ModelsToggleColumn::find()->whereUser(Yii::$app->user->id)->whereTable($this->getTable())->one();
-        $db = $db ? json_decode($db->columns, true) : [];
+        $db = $db ? json_decode(stripslashes($db->columns)) : null;
 
-        if (!empty($db)) {
+        if ($db !== null) {
             $this->selectedColumns = $db;
         }
     }
